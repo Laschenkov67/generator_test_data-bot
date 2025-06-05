@@ -1,0 +1,174 @@
+package com.example.javabot;
+
+import lombok.SneakyThrows;
+import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
+import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.generics.TelegramClient;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
+public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
+
+    private final TelegramClient telegramClient;
+
+    public UpdateConsumer() {
+        this.telegramClient = new OkHttpTelegramClient(
+                "7388390138:AAEkbBKU0kCImCqI55cz3dQgTYo2eF_eJFU"
+        );
+    }
+
+    @SneakyThrows
+    @Override
+    public void consume(Update update) {
+        if (update.hasMessage()) {
+            String messageText = update.getMessage().getText();
+            Long chatId = update.getMessage().getChatId();
+
+            if (messageText.equals("/start")) {
+                sendReplyKeyboard(chatId);
+            } else if (messageText.equals("ИНН")) {
+                GenerateJuridicalInn(chatId);
+            } else if (messageText.equals("ИНН ФЛ")) {
+                GenerateInnFl(chatId);
+            } else if (messageText.equals("ОГРН")) {
+                GenerateOgrn(chatId);
+            } else if (messageText.equals("ОГРН ИП")) {
+                GenerateOgrnIp(chatId);
+            } else if (messageText.equals("СНИЛС")) {
+                GenerateSnils(chatId);
+            } else if (messageText.equals("ФИО")) {
+                GenerateFullName(chatId);
+            } else if (messageText.equals("Дата рождения")) {
+                GenerateBirthDate(chatId);
+            } else if (messageText.equals("Логин")) {
+                GenerateLogin(chatId);
+            } else if (messageText.equals("E-mail")) {
+                GenerateEmail(chatId);
+            } else if (messageText.equals("Телефон")) {
+                GeneratePhoneNumber(chatId);
+            } else if (messageText.equals("GUID")) {
+                GenerateGUID(chatId);
+            } else if (messageText.equals("UUID")) {
+                GenerateUUID(chatId);
+            } else {
+                sendMessage(chatId, "Я вас не понимаю");
+            }
+        }
+    }
+
+    @SneakyThrows
+    private void sendReplyKeyboard(Long chatId) {
+        // Текст сообщения
+        SendMessage message = SendMessage.builder()
+                .chatId(chatId.toString())
+                .text("Выберите значение из списка:")
+                .build();
+
+        // Все кнопки, которые нужно отобразить
+        List<String> buttons = List.of(
+                "ИНН", "ИНН ФЛ", "ОГРН",
+                "ОГРН ИП", "СНИЛС", "ФИО",
+                "Дата рождения", "Логин", "E-mail",
+                "Телефон", "GUID", "UUID"
+        );
+
+        List<KeyboardRow> keyboardRows = new ArrayList<>();
+        int buttonsPerRow = 3;
+
+        for (int i = 0; i < buttons.size(); i += buttonsPerRow) {
+            KeyboardRow row = new KeyboardRow();
+            buttons.stream()
+                    .skip(i)
+                    .limit(buttonsPerRow)
+                    .forEach(row::add);
+            keyboardRows.add(row);
+        }
+
+        ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup(keyboardRows);
+        markup.setResizeKeyboard(true);
+        markup.setOneTimeKeyboard(false);
+
+        message.setReplyMarkup(markup);
+        telegramClient.execute(message);
+    }
+
+    @SneakyThrows
+    private void sendMessage(
+            Long chatId,
+            String messageText
+    ) {
+        SendMessage message = SendMessage.builder()
+                .text(messageText)
+                .chatId(chatId)
+                .build();
+
+        telegramClient.execute(message);
+    }
+
+    private void GenerateJuridicalInn(Long chatId) {
+        String randomInn = BusinessDataGenerator.generateJuridicalInn();
+        sendMessage(chatId, randomInn);
+    }
+
+    private void GenerateInnFl(Long chatId) {
+        String randomInnFl = BusinessDataGenerator.generateIndividualInn();
+        sendMessage(chatId, randomInnFl);
+    }
+
+    private void GenerateOgrn(Long chatId) {
+        String randomOgrn = BusinessDataGenerator.generateOgrn();
+        sendMessage(chatId, randomOgrn);
+    }
+
+    private void GenerateOgrnIp(Long chatId) {
+        String randomOgrnIp = BusinessDataGenerator.generateOgrnIp();
+        sendMessage(chatId, randomOgrnIp);
+    }
+
+    private void GenerateSnils(Long chatId) {
+        String randomSnils = BusinessDataGenerator.generateSnils();
+        sendMessage(chatId, randomSnils);
+    }
+
+    private void GenerateFullName(Long chatId) {
+        String fullName = PersonDataGenerator.generateFullName();
+        sendMessage(chatId, fullName);
+    }
+
+    private void GenerateBirthDate(Long chatId) {
+        String birthDate = PersonDataGenerator.generateBirthDate();
+        sendMessage(chatId, birthDate);
+    }
+
+    private void GeneratePhoneNumber(Long chatId) {
+        String phoneNumber = PersonDataGenerator.generatePhoneNumber();
+        sendMessage(chatId, phoneNumber);
+    }
+
+    private void GenerateEmail(Long chatId) {
+        String email = PersonDataGenerator.generateEmail();
+        sendMessage(chatId, email);
+    }
+
+    private void GenerateLogin(Long chatId) {
+        String login = PersonDataGenerator.generateLogin();
+        sendMessage(chatId, login);
+    }
+
+    private void GenerateGUID(Long chatId) {
+        String guid = GuidUuidGenerator.generateGuid();
+        sendMessage(chatId, guid);
+    }
+
+    private void GenerateUUID(Long chatId) {
+        String guid = GuidUuidGenerator.generateUuid();
+        sendMessage(chatId, guid);
+    }
+}
