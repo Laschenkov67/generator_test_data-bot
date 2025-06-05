@@ -13,7 +13,7 @@ public class TestDataTelegramBot implements SpringLongPollingBot {
 
     @Override
     public String getBotToken() {
-        return "7388390138:AAEkbBKU0kCImCqI55cz3dQgTYo2eF_eJFU";
+        return "";
     }
 
     @Override

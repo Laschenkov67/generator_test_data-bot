@@ -20,7 +20,7 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
 
     public UpdateConsumer() {
         this.telegramClient = new OkHttpTelegramClient(
-                "7388390138:AAEkbBKU0kCImCqI55cz3dQgTYo2eF_eJFU"
+                ""
         );
     }
 
