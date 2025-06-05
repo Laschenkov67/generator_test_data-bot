@@ -28,37 +28,24 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
     @Override
     public void consume(Update update) {
         if (update.hasMessage()) {
-            String messageText = update.getMessage().getText();
-            Long chatId = update.getMessage().getChatId();
+            var message = update.getMessage();
+            var chatId = message.getChatId();
 
-            if (messageText.equals("/start")) {
-                sendReplyKeyboard(chatId);
-            } else if (messageText.equals("ИНН")) {
-                GenerateJuridicalInn(chatId);
-            } else if (messageText.equals("ИНН ФЛ")) {
-                GenerateInnFl(chatId);
-            } else if (messageText.equals("ОГРН")) {
-                GenerateOgrn(chatId);
-            } else if (messageText.equals("ОГРН ИП")) {
-                GenerateOgrnIp(chatId);
-            } else if (messageText.equals("СНИЛС")) {
-                GenerateSnils(chatId);
-            } else if (messageText.equals("ФИО")) {
-                GenerateFullName(chatId);
-            } else if (messageText.equals("Дата рождения")) {
-                GenerateBirthDate(chatId);
-            } else if (messageText.equals("Логин")) {
-                GenerateLogin(chatId);
-            } else if (messageText.equals("E-mail")) {
-                GenerateEmail(chatId);
-            } else if (messageText.equals("Телефон")) {
-                GeneratePhoneNumber(chatId);
-            } else if (messageText.equals("GUID")) {
-                GenerateGUID(chatId);
-            } else if (messageText.equals("UUID")) {
-                GenerateUUID(chatId);
-            } else {
-                sendMessage(chatId, "Я вас не понимаю");
+            switch (message.getText()) {
+                case "/start"        -> sendReplyKeyboard(chatId);
+                case "ИНН"           -> GenerateJuridicalInn(chatId);
+                case "ИНН ФЛ"        -> GenerateInnFl(chatId);
+                case "ОГРН"          -> GenerateOgrn(chatId);
+                case "ОГРН ИП"       -> GenerateOgrnIp(chatId);
+                case "СНИЛС"         -> GenerateSnils(chatId);
+                case "ФИО"           -> GenerateFullName(chatId);
+                case "Дата рождения" -> GenerateBirthDate(chatId);
+                case "Логин"         -> GenerateLogin(chatId);
+                case "E-mail"        -> GenerateEmail(chatId);
+                case "Телефон"       -> GeneratePhoneNumber(chatId);
+                case "GUID"          -> GenerateGUID(chatId);
+                case "UUID"          -> GenerateUUID(chatId);
+                default              -> sendMessage(chatId, "Я вас не понимаю");
             }
         }
     }
