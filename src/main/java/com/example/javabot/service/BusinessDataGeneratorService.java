@@ -126,7 +126,7 @@ public class BusinessDataGeneratorService {
     /**
      * Генерация списка случайных цифр указанной длины
      */
-    private List<Integer> generateRandomDigits(int count) {
+    public List<Integer> generateRandomDigits(int count) {
         return IntStream.range(0, count)
                 .mapToObj(i -> random.nextInt(10))
                 .collect(Collectors.toList());
@@ -135,7 +135,7 @@ public class BusinessDataGeneratorService {
     /**
      * Преобразование списка цифр в строку
      */
-    private String digitsToString(List<Integer> digits) {
+    public String digitsToString(List<Integer> digits) {
         return digits.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining());
@@ -144,14 +144,14 @@ public class BusinessDataGeneratorService {
     /**
      * Преобразование списка цифр в long число
      */
-    private long digitsToLong(List<Integer> digits) {
+    public long digitsToLong(List<Integer> digits) {
         return Long.parseLong(digitsToString(digits));
     }
 
     /**
      * Расчет контрольной цифры для ИНН юридического лица
      */
-    private int calculateJuridicalInnChecksum(List<Integer> digits) {
+    public int calculateJuridicalInnChecksum(List<Integer> digits) {
         int[] weights = {2, 4, 10, 3, 5, 9, 4, 6, 8};
         int sum = IntStream.range(0, 9)
                 .map(i -> digits.get(i) * weights[i])
@@ -162,7 +162,7 @@ public class BusinessDataGeneratorService {
     /**
      * Расчет контрольной цифры для ИНН физического лица
      */
-    private int calculateIndividualInnChecksum(List<Integer> digits, int length) {
+    public int calculateIndividualInnChecksum(List<Integer> digits, int length) {
         int[] weights = length == 11 ?
                 new int[]{7, 2, 4, 10, 3, 5, 9, 4, 6, 8} :
                 new int[]{3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8};
@@ -176,7 +176,7 @@ public class BusinessDataGeneratorService {
     /**
      * Расчет контрольной цифры для ЕНП ОМС (алгоритм Луна)
      */
-    private int calculateEnpOmsChecksum(List<Integer> digits) {
+    public int calculateEnpOmsChecksum(List<Integer> digits) {
         int sum = 0;
         for (int i = digits.size() - 1; i >= 0; i--) {
             int digit = digits.get(i);
@@ -194,7 +194,7 @@ public class BusinessDataGeneratorService {
     /**
      * Расчет контрольной цифры для ОКПО
      */
-    private int calculateOkpoChecksum(List<Integer> digits, int length) {
+    public int calculateOkpoChecksum(List<Integer> digits, int length) {
         int sum = 0;
 
         if (length == 8) {
@@ -237,7 +237,7 @@ public class BusinessDataGeneratorService {
     /**
      * Расчет контрольной суммы СНИЛС
      */
-    private int calculateSnilsChecksum(String snilsNumber) {
+    public int calculateSnilsChecksum(String snilsNumber) {
         int sum = 0;
         for (int i = 0; i < 9; i++) {
             sum += Character.getNumericValue(snilsNumber.charAt(i)) * (9 - i);
