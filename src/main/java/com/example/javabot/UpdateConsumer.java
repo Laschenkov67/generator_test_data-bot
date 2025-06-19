@@ -1,5 +1,8 @@
 package com.example.javabot;
 
+import com.example.javabot.service.BusinessDataGeneratorService;
+import com.example.javabot.service.GuidUuidGeneratorService;
+import com.example.javabot.service.PersonDataGeneratorService;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
@@ -17,11 +20,19 @@ import java.util.List;
 public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
 
     private final TelegramClient telegramClient;
+    private final BusinessDataGeneratorService businessDataGeneratorService;
+    private final PersonDataGeneratorService personDataGeneratorService;
+    private final GuidUuidGeneratorService guidUuidGeneratorService;
 
-    public UpdateConsumer() {
+    public UpdateConsumer(BusinessDataGeneratorService businessDataGeneratorService,
+                          PersonDataGeneratorService personDataGeneratorService,
+                          GuidUuidGeneratorService guidUuidGeneratorService ) {
         this.telegramClient = new OkHttpTelegramClient(
                 "1069414284:AAGXLYjclI6P1Wj7t-j9yDGoF-7jDRpUbEk"
         );
+        this.businessDataGeneratorService = businessDataGeneratorService;
+        this.personDataGeneratorService = personDataGeneratorService;
+        this.guidUuidGeneratorService = guidUuidGeneratorService;
     }
 
     @SneakyThrows
@@ -67,11 +78,10 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
         // Все кнопки, которые нужно отобразить
         List<String> buttons = List.of(
                 "ИНН", "ИНН ФЛ", "ОГРН",
-                "ОГРН ИП", "СНИЛС", "ФИО",
-                "Дата рождения", "Логин", "E-mail",
-                "Телефон", "GUID", "UUID", "ЕНП ОМС",
-                "ОКПО", "ОКПО ИП", "GUID LOWER", "Серия и номер паспорта РФ",
-                "СНИЛС ГОСКЛЮЧ"
+                "ОГРН ИП", "ОКПО", "ОКПО ИП","СНИЛС",
+                "СНИЛС ГОСКЛЮЧ", "ЕНП ОМС", "Серия и номер паспорта РФ",
+                "ФИО", "Дата рождения", "Логин", "E-mail",
+                "Телефон", "GUID", "UUID", "GUID LOWER"
         );
 
         List<KeyboardRow> keyboardRows = new ArrayList<>();
@@ -108,27 +118,27 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
     }
 
     private void GenerateJuridicalInn(Long chatId) {
-        String randomInn = BusinessDataGenerator.generateJuridicalInn();
+        String randomInn = businessDataGeneratorService.generateJuridicalInn();
         sendMessage(chatId, randomInn);
     }
 
     private void GenerateInnFl(Long chatId) {
-        String randomInnFl = BusinessDataGenerator.generateIndividualInn();
+        String randomInnFl = businessDataGeneratorService.generateIndividualInn();
         sendMessage(chatId, randomInnFl);
     }
 
     private void GenerateOgrn(Long chatId) {
-        String randomOgrn = BusinessDataGenerator.generateOgrn();
+        String randomOgrn = businessDataGeneratorService.generateOgrn();
         sendMessage(chatId, randomOgrn);
     }
 
     private void GenerateOgrnIp(Long chatId) {
-        String randomOgrnIp = BusinessDataGenerator.generateOgrnIp();
+        String randomOgrnIp = businessDataGeneratorService.generateOgrnIp();
         sendMessage(chatId, randomOgrnIp);
     }
 
     private void GenerateOkpo(Long chatId) {
-        String randomOkpo = BusinessDataGenerator.generateOkpo();
+        String randomOkpo = businessDataGeneratorService.generateOkpo();
         sendMessage(chatId, randomOkpo);
     }
 
@@ -136,67 +146,67 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
      * @param chatId
      */
     private void GenerateOkpoIp(Long chatId) {
-        String randomOkpoIp = BusinessDataGenerator.generateOkpoIp();
+        String randomOkpoIp = businessDataGeneratorService.generateOkpoIp();
         sendMessage(chatId, randomOkpoIp);
     }
 
     private void GenerateEnpOms(Long chatId) {
-        String randomEnpOms = BusinessDataGenerator.generateEnpOms();
+        String randomEnpOms = businessDataGeneratorService.generateEnpOms();
         sendMessage(chatId, randomEnpOms);
     }
 
     private void GeneratePassportNumber(Long chatId) {
-        String randomPassportNumber = BusinessDataGenerator.generatePassportNumber();
+        String randomPassportNumber = businessDataGeneratorService.generatePassportNumber();
         sendMessage(chatId, randomPassportNumber);
     }
 
     private void GenerateSnilsGosKey(Long chatId) {
-        String randomGosKey = BusinessDataGenerator.generateSnilsGosKey();
+        String randomGosKey = businessDataGeneratorService.generateSnilsGosKey();
         sendMessage(chatId, randomGosKey);
     }
 
     private void GenerateSnils(Long chatId) {
-        String randomSnils = BusinessDataGenerator.generateSnils();
+        String randomSnils = businessDataGeneratorService.generateSnils();
         sendMessage(chatId, randomSnils);
     }
 
     private void GenerateFullName(Long chatId) {
-        String fullName = PersonDataGenerator.generateFullName();
+        String fullName = personDataGeneratorService.generateFullName();
         sendMessage(chatId, fullName);
     }
 
     private void GenerateBirthDate(Long chatId) {
-        String birthDate = PersonDataGenerator.generateBirthDate();
+        String birthDate = personDataGeneratorService.generateBirthDate();
         sendMessage(chatId, birthDate);
     }
 
     private void GeneratePhoneNumber(Long chatId) {
-        String phoneNumber = PersonDataGenerator.generatePhoneNumber();
+        String phoneNumber = personDataGeneratorService.generatePhoneNumber();
         sendMessage(chatId, phoneNumber);
     }
 
     private void GenerateEmail(Long chatId) {
-        String email = PersonDataGenerator.generateEmail();
+        String email = personDataGeneratorService.generateEmail();
         sendMessage(chatId, email);
     }
 
     private void GenerateLogin(Long chatId) {
-        String login = PersonDataGenerator.generateLogin();
+        String login = personDataGeneratorService.generateLogin();
         sendMessage(chatId, login);
     }
 
     private void GenerateGUID(Long chatId) {
-        String guid = GuidUuidGenerator.generateGuid();
+        String guid = guidUuidGeneratorService.generateGuid();
         sendMessage(chatId, guid);
     }
 
     private void GenerateLowerGUID(Long chatId) {
-        String guid = GuidUuidGenerator.generateGuidLower();
+        String guid = guidUuidGeneratorService.generateGuidLower();
         sendMessage(chatId, guid);
     }
 
     private void GenerateUUID(Long chatId) {
-        String guid = GuidUuidGenerator.generateUuid();
+        String guid = guidUuidGeneratorService.generateUuid();
         sendMessage(chatId, guid);
     }
 }
