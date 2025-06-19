@@ -9,6 +9,7 @@ public class GuidUuidGenerator {
     static {
         // Инициализация hex-символов
         HEX_DATA.put("guidFirstChars", Arrays.asList("8", "9", "A", "B", "C", "D", "E", "F"));
+        HEX_DATA.put("guidFirstCharsLower", Arrays.asList("8", "9", "a", "b", "c", "d", "e", "f"));
         HEX_DATA.put("allHexChars", Arrays.asList(
                 "0", "1", "2", "3", "4", "5", "6", "7",
                 "8", "9", "a", "b", "c", "d", "e", "f"
@@ -31,6 +32,23 @@ public class GuidUuidGenerator {
     }
 
     /**
+     * Генерация GUID в нижнем регистре в формате xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+     * Пример: f928c63e-6246-4e06-b0cb-3bc7b708aed9
+     */
+    public static String generateGuidLower() {
+        return String.format("%s%s%s%s%s%s%s%s-%s%s%s%s-%s%s%s%s-%s%s%s%s-%s%s%s%s%s%s%s%s%s%s%s%s",
+                getRandomHexLower(true), getRandomHexLower(false), getRandomHexLower(false), getRandomHexLower(false),
+                getRandomHexLower(false), getRandomHexLower(false), getRandomHexLower(false), getRandomHexLower(false),
+                getRandomHexLower(false), getRandomHexLower(false), getRandomHexLower(false), getRandomHexLower(false),
+                getRandomHexLower(false), getRandomHexLower(false), getRandomHexLower(false), getRandomHexLower(false),
+                getRandomHexLower(false), getRandomHexLower(false), getRandomHexLower(false), getRandomHexLower(false),
+                getRandomHexLower(false), getRandomHexLower(false), getRandomHexLower(false), getRandomHexLower(false),
+                getRandomHexLower(false), getRandomHexLower(false), getRandomHexLower(false), getRandomHexLower(false),
+                getRandomHexLower(false), getRandomHexLower(false), getRandomHexLower(false), getRandomHexLower(false)
+        );
+    }
+
+    /**
      * Генерация UUID в формате xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
      * Пример: d0e12179d0fa463eb77895a08d9f4ac5
      */
@@ -49,13 +67,10 @@ public class GuidUuidGenerator {
         return source.get(random.nextInt(source.size()));
     }
 
-    /**
-     * Генерация обоих идентификаторов
-     */
-    public static Map<String, String> generateBoth() {
-        Map<String, String> ids = new LinkedHashMap<>();
-        ids.put("GUID", generateGuid());
-        ids.put("UUID", generateUuid());
-        return ids;
+    private static String getRandomHexLower(boolean forGuidStart) {
+        List<String> source = forGuidStart ?
+                HEX_DATA.get("guidFirstCharsLower") :
+                HEX_DATA.get("allHexChars");
+        return source.get(random.nextInt(source.size()));
     }
 }

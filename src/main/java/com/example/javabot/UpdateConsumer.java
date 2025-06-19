@@ -20,7 +20,7 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
 
     public UpdateConsumer() {
         this.telegramClient = new OkHttpTelegramClient(
-                ""
+                "1069414284:AAGXLYjclI6P1Wj7t-j9yDGoF-7jDRpUbEk"
         );
     }
 
@@ -44,6 +44,7 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
                 case "E-mail"        -> GenerateEmail(chatId);
                 case "Телефон"       -> GeneratePhoneNumber(chatId);
                 case "GUID"          -> GenerateGUID(chatId);
+                case "GUID LOWER"    -> GenerateLowerGUID(chatId);
                 case "UUID"          -> GenerateUUID(chatId);
                 default              -> sendMessage(chatId, "Я вас не понимаю");
             }
@@ -63,7 +64,9 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
                 "ИНН", "ИНН ФЛ", "ОГРН",
                 "ОГРН ИП", "СНИЛС", "ФИО",
                 "Дата рождения", "Логин", "E-mail",
-                "Телефон", "GUID", "UUID"
+                "Телефон", "GUID", "UUID", "ЕНП ОМС",
+                "ОКПО", "ОКПО ИП", "GUID LOWER", "Серия и номер паспорта РФ",
+                "СНИЛС ГОСКЛЮЧ"
         );
 
         List<KeyboardRow> keyboardRows = new ArrayList<>();
@@ -151,6 +154,11 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
 
     private void GenerateGUID(Long chatId) {
         String guid = GuidUuidGenerator.generateGuid();
+        sendMessage(chatId, guid);
+    }
+
+    private void GenerateLowerGUID(Long chatId) {
+        String guid = GuidUuidGenerator.generateGuidLower();
         sendMessage(chatId, guid);
     }
 

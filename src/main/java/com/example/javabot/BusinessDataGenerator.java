@@ -46,6 +46,39 @@ public class BusinessDataGenerator {
     }
 
     /**
+     * Генерация серии и номера паспорта РФ в формате "XXXX XXXXXX"
+     */
+    public static String generatePassportNumber() {
+        // Серия паспорта (4 цифры)
+        String series = String.format("%04d", 1000 + random.nextInt(9000));
+        // Номер паспорта (6 цифр)
+        String number = String.format("%06d", 100000 + random.nextInt(900000));
+        return series + " " + number;
+    }
+
+    /**
+     * Генерация СНИЛС в формате "XXX-XXX-XXX XX"
+     */
+    public static String generateSnilsGosKey() {
+        // Генерируем 9 цифр для основной части СНИЛС
+        StringBuilder snilsNumber = new StringBuilder();
+        for (int i = 0; i < 9; i++) {
+            snilsNumber.append(random.nextInt(10));
+        }
+
+        // Рассчитываем контрольную сумму
+        int checksum = calculateSnilsChecksum(snilsNumber.toString());
+
+        // Форматируем СНИЛС
+        return String.format("%s-%s-%s %02d",
+                snilsNumber.substring(0, 3),
+                snilsNumber.substring(3, 6),
+                snilsNumber.substring(6, 9),
+                checksum
+        );
+    }
+
+    /**
      * Генерация СНИЛС (XXX-XXX-XXX YY)
      */
     public static String generateSnils() {
@@ -57,6 +90,33 @@ public class BusinessDataGenerator {
                 digitsToString(digits.subList(6, 9)),
                 checksum
         );
+    }
+
+    /**
+     * Генерация ЕНП ОМС (16 цифр)
+     */
+    public static String generateEnpOms() {
+        List<Integer> digits = generateRandomDigits(15);
+        int checksum = calculateEnpOmsChecksum(digits);
+        return digitsToString(digits) + checksum;
+    }
+
+    /**
+     * Генерация ОКПО юридического лица (8 цифр)
+     */
+    public static String generateOkpo() {
+        List<Integer> digits = generateRandomDigits(7);
+        int checksum = calculateOkpoChecksum(digits, 8);
+        return digitsToString(digits) + checksum;
+    }
+
+    /**
+     * Генерация ОКПО ИП (10 цифр)
+     */
+    public static String generateOkpoIp() {
+        List<Integer> digits = generateRandomDigits(9);
+        int checksum = calculateOkpoChecksum(digits, 10);
+        return digitsToString(digits) + checksum;
     }
 
     /**
@@ -107,5 +167,84 @@ public class BusinessDataGenerator {
                 .map(i -> digits.get(i) * weights[i])
                 .sum();
         return (sum % 11) % 10;
+    }
+
+    /**
+     * Расчет контрольной цифры для ЕНП ОМС (алгоритм Луна)
+     */
+    private static int calculateEnpOmsChecksum(List<Integer> digits) {
+        int sum = 0;
+        for (int i = digits.size() - 1; i >= 0; i--) {
+            int digit = digits.get(i);
+            if ((digits.size() - i) % 2 == 0) {
+                digit *= 2;
+                if (digit > 9) {
+                    digit -= 9;
+                }
+            }
+            sum += digit;
+        }
+        return (10 - (sum % 10)) % 10;
+    }
+
+    /**
+     * Расчет контрольной цифры для ОКПО
+     */
+    private static int calculateOkpoChecksum(List<Integer> digits, int length) {
+        int sum = 0;
+
+        if (length == 8) {
+            // Для 8-значного ОКПО используем веса 1, 2, 3, 4, 5, 6, 7
+            for (int i = 0; i < 7; i++) {
+                sum += digits.get(i) * (i + 1);
+            }
+        } else {
+            // Для 10-значного ОКПО используем веса 1, 2, 3, 4, 5, 6, 7, 8, 9
+            for (int i = 0; i < 9; i++) {
+                sum += digits.get(i) * (i + 1);
+            }
+        }
+
+        int remainder = sum % 11;
+
+        // Если остаток равен 10, применяем альтернативный алгоритм
+        if (remainder == 10) {
+            sum = 0;
+            if (length == 8) {
+                // Веса 3, 4, 5, 6, 7, 8, 9
+                for (int i = 0; i < 7; i++) {
+                    sum += digits.get(i) * (i + 3);
+                }
+            } else {
+                // Веса 3, 4, 5, 6, 7, 8, 9, 10, 11
+                for (int i = 0; i < 9; i++) {
+                    sum += digits.get(i) * (i + 3);
+                }
+            }
+            remainder = sum % 11;
+            if (remainder == 10) {
+                remainder = 0;
+            }
+        }
+
+        return remainder;
+    }
+
+    /**
+     * Расчет контрольной суммы СНИЛС
+     */
+    private static int calculateSnilsChecksum(String snilsNumber) {
+        int sum = 0;
+        for (int i = 0; i < 9; i++) {
+            sum += Character.getNumericValue(snilsNumber.charAt(i)) * (9 - i);
+        }
+
+        if (sum < 100) {
+            return sum;
+        } else if (sum == 100 || sum == 101) {
+            return 0;
+        } else {
+            return sum % 101;
+        }
     }
 }
