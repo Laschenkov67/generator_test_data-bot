@@ -8,8 +8,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class PersonDataGenerator {
     private static final Random random = new Random();
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-
-    // HashMap для хранения данных
     private static final Map<String, List<String>> DATA_MAP = new HashMap<>();
 
     static {
@@ -109,18 +107,5 @@ public class PersonDataGenerator {
     private static String getRandomElement(String category) {
         List<String> items = DATA_MAP.get(category);
         return items.get(random.nextInt(items.size()));
-    }
-
-    /**
-     * Генерация полного набора персональных данных
-     */
-    public static Map<String, String> generateFullPersonData() {
-        Map<String, String> personData = new LinkedHashMap<>();
-        personData.put("ФИО", generateFullName());
-        personData.put("Дата рождения", generateBirthDate());
-        personData.put("Телефон", generatePhoneNumber());
-        personData.put("Email", generateEmail());
-        personData.put("Логин", generateLogin());
-        return personData;
     }
 }

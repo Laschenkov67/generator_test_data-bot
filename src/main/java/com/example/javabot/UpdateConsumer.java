@@ -37,7 +37,12 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
                 case "ИНН ФЛ"        -> GenerateInnFl(chatId);
                 case "ОГРН"          -> GenerateOgrn(chatId);
                 case "ОГРН ИП"       -> GenerateOgrnIp(chatId);
+                case "ОКПО"          -> GenerateOkpo(chatId);
+                case "ОКПО ИП"       -> GenerateOkpoIp(chatId);
+                case "ЕНП ОМС"       -> GenerateEnpOms(chatId);
+                case "Серия и номер паспорта РФ" -> GeneratePassportNumber(chatId);
                 case "СНИЛС"         -> GenerateSnils(chatId);
+                case "СНИЛС ГОСКЛЮЧ" -> GenerateSnilsGosKey(chatId);
                 case "ФИО"           -> GenerateFullName(chatId);
                 case "Дата рождения" -> GenerateBirthDate(chatId);
                 case "Логин"         -> GenerateLogin(chatId);
@@ -120,6 +125,34 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
     private void GenerateOgrnIp(Long chatId) {
         String randomOgrnIp = BusinessDataGenerator.generateOgrnIp();
         sendMessage(chatId, randomOgrnIp);
+    }
+
+    private void GenerateOkpo(Long chatId) {
+        String randomOkpo = BusinessDataGenerator.generateOkpo();
+        sendMessage(chatId, randomOkpo);
+    }
+
+    /**
+     * @param chatId
+     */
+    private void GenerateOkpoIp(Long chatId) {
+        String randomOkpoIp = BusinessDataGenerator.generateOkpoIp();
+        sendMessage(chatId, randomOkpoIp);
+    }
+
+    private void GenerateEnpOms(Long chatId) {
+        String randomEnpOms = BusinessDataGenerator.generateEnpOms();
+        sendMessage(chatId, randomEnpOms);
+    }
+
+    private void GeneratePassportNumber(Long chatId) {
+        String randomPassportNumber = BusinessDataGenerator.generatePassportNumber();
+        sendMessage(chatId, randomPassportNumber);
+    }
+
+    private void GenerateSnilsGosKey(Long chatId) {
+        String randomGosKey = BusinessDataGenerator.generateSnilsGosKey();
+        sendMessage(chatId, randomGosKey);
     }
 
     private void GenerateSnils(Long chatId) {
